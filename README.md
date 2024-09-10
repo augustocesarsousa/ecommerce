@@ -1,1 +1,1 @@
-# Repositório destinado ao parojeto E-commerce
+# Repositório destinado ao projeto E-commerce
