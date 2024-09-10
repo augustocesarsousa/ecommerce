@@ -1,1 +1,1 @@
-# Repositório destinado ao backend do projeto E-commerce
+# Repositório destinado ao parojeto E-commerce
