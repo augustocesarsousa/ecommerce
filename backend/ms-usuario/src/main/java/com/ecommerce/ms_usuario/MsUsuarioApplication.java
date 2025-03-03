@@ -1,13 +1,13 @@
-package br.com.ecommerce.msproduct;
+package com.ecommerce.ms_usuario;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MsProductApplication {
+public class MsUsuarioApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MsProductApplication.class, args);
+		SpringApplication.run(MsUsuarioApplication.class, args);
 	}
 
 }

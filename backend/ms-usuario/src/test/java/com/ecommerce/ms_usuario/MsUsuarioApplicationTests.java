@@ -1,10 +1,10 @@
-package br.com.ecommerce.msproduct;
+package com.ecommerce.ms_usuario;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MsProductApplicationTests {
+class MsUsuarioApplicationTests {
 
 	@Test
 	void contextLoads() {
