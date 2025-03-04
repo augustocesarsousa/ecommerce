@@ -2,6 +2,7 @@ package com.ecommerce.ms_usuario.dtos;
 
 import com.ecommerce.ms_usuario.enums.UsuarioPerfil;
 import com.ecommerce.ms_usuario.enums.UsuarioStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class UsuarioDTO implements Serializable {
     public interface UsuarioView {
         public static interface Cadastro {}
         public static interface Atualizar {}
+        public static interface NaoExibir {}
     }
 
     @JsonView(UsuarioView.Atualizar.class)
@@ -46,7 +48,9 @@ public class UsuarioDTO implements Serializable {
     @JsonView({UsuarioView.Cadastro.class, UsuarioView.Atualizar.class})
     private UsuarioPerfil perfil;
 
+    @JsonView(UsuarioView.NaoExibir.class)
     private LocalDateTime dtCriacao;
 
+    @JsonView(UsuarioView.NaoExibir.class)
     private LocalDateTime dtUltAlteracao;
 }

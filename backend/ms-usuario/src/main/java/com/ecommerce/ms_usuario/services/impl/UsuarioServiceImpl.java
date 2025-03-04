@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,5 +63,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         BeanUtils.copyProperties(usuario, usuarioDTO);
         return usuarioDTO;
+    }
+
+    @Override
+    public List<Usuario> findAll() {
+        return usuarioRepository.findAll();
     }
 }

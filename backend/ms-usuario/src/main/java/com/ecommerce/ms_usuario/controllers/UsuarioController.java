@@ -1,6 +1,7 @@
 package com.ecommerce.ms_usuario.controllers;
 
 import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
+import com.ecommerce.ms_usuario.models.Usuario;
 import com.ecommerce.ms_usuario.services.UsuarioService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -37,5 +39,10 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> findById(@PathVariable(value = "id") UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Usuario>> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findAll());
     }
 }
