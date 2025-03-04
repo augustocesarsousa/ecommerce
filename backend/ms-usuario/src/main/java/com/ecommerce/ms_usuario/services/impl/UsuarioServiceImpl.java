@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -51,6 +52,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         BeanUtils.copyProperties(usuario, usuarioDTO);
 
+        return usuarioDTO;
+    }
+
+    @Override
+    public UsuarioDTO findById(UUID id) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+        Usuario usuario = usuarioOptional.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        BeanUtils.copyProperties(usuario, usuarioDTO);
         return usuarioDTO;
     }
 }

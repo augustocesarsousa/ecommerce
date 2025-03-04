@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/usuarios")
@@ -30,5 +32,10 @@ public class UsuarioController {
                                              UsuarioDTO usuarioDTO) {
         UsuarioDTO usuarioAtualizadoDTO = usuarioService.update(usuarioDTO);
         return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizadoDTO);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> findById(@PathVariable(value = "id") UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findById(id));
     }
 }
