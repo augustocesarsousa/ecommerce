@@ -25,26 +25,33 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private UUID id;
+
     @Column(nullable = false)
     private String nome;
+
     @Column(nullable = false, unique = true)
     private String login;
+
     @Column(nullable = false)
     @JsonIgnore
     private String senha;
+
     @Column(nullable = false)
     private String telefone;
+
     @Column(nullable = false)
     private String email;
+
     @Column(nullable = false)
     private UsuarioStatus status;
+
     @Column(nullable = false)
     private UsuarioPerfil perfil;
+
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime dtCriacao;
-    @Column(nullable = false)
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime dtUltAlteracao;
-    private Usuario usuarioUltAlteracao;
 }
