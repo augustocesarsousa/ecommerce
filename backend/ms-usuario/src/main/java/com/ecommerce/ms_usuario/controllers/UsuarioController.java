@@ -2,12 +2,11 @@ package com.ecommerce.ms_usuario.controllers;
 
 import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
 import com.ecommerce.ms_usuario.services.UsuarioService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -18,9 +17,18 @@ public class UsuarioController {
     UsuarioService usuarioService;
 
     @PostMapping("/criar")
-    public ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<UsuarioDTO> create(@RequestBody
+                                             @JsonView(UsuarioDTO.UsuarioView.Cadastro.class)
+                                             UsuarioDTO usuarioDTO) {
         UsuarioDTO novoUsuarioDTO = usuarioService.create(usuarioDTO);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoUsuarioDTO.getId()).toUri();
-        return ResponseEntity.created(uri).body(novoUsuarioDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuarioDTO);
+    }
+
+    @PutMapping("/atualizar")
+    public ResponseEntity<UsuarioDTO> update(@RequestBody
+                                             @JsonView(UsuarioDTO.UsuarioView.Atualizar.class)
+                                             UsuarioDTO usuarioDTO) {
+        UsuarioDTO usuarioAtualizadoDTO = usuarioService.update(usuarioDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizadoDTO);
     }
 }

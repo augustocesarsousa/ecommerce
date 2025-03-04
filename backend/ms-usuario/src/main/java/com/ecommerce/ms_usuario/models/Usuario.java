@@ -43,9 +43,11 @@ public class Usuario implements Serializable {
     private String email;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UsuarioStatus status;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UsuarioPerfil perfil;
 
     @Column(nullable = false)
