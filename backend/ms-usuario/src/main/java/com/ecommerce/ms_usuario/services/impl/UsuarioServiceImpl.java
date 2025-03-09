@@ -2,14 +2,17 @@ package com.ecommerce.ms_usuario.services.impl;
 
 import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
 import com.ecommerce.ms_usuario.enums.UsuarioStatus;
-import com.ecommerce.ms_usuario.models.Usuario;
+import com.ecommerce.ms_usuario.models.UsuarioModel;
 import com.ecommerce.ms_usuario.repositories.UsuarioRepository;
 import com.ecommerce.ms_usuario.services.UsuarioService;
+import com.ecommerce.ms_usuario.services.exceptions.ExistingAttributeException;
 import com.ecommerce.ms_usuario.services.exceptions.ResourceNotFoundException;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -23,50 +26,66 @@ public class UsuarioServiceImpl implements UsuarioService {
     UsuarioRepository usuarioRepository;
 
     @Override
-    public UsuarioDTO create(UsuarioDTO usuarioDTO) {
-        var usuario = new Usuario();
-
-        BeanUtils.copyProperties(usuarioDTO, usuario);
-        usuario.setStatus(UsuarioStatus.ATIVO);
-        usuario.setDtCriacao(LocalDateTime.now(ZoneId.of("UTC")));
-        usuario = usuarioRepository.save(usuario);
-        BeanUtils.copyProperties(usuario, usuarioDTO);
-
-        return usuarioDTO;
-    }
-
-    @Override
-    public UsuarioDTO update(UsuarioDTO usuarioDTO) {
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioDTO.getId());
-        Usuario usuario = usuarioOptional.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
-
-        usuario.setNome(usuarioDTO.getNome());
-        if(usuarioDTO.getSenha() != null) {
-            usuario.setSenha(usuarioDTO.getSenha());
+    public UsuarioModel create(UsuarioDTO usuarioDTO) {
+        if(usuarioRepository.existsByLogin(usuarioDTO.getLogin())) {
+            throw new ExistingAttributeException("Login já cadastrado");
         }
-        usuario.setTelefone(usuarioDTO.getTelefone());
-        usuario.setEmail(usuarioDTO.getEmail());
-        usuario.setStatus(usuarioDTO.getStatus());
-        usuario.setPerfil(usuarioDTO.getPerfil());
-        usuario.setDtUltAlteracao(LocalDateTime.now(ZoneId.of("UTC")));
-        usuario = usuarioRepository.save(usuario);
+        if(usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
+            throw new ExistingAttributeException("E-mail já cadastrado");
+        }
+        UsuarioModel usuarioModel = new UsuarioModel();
 
-        BeanUtils.copyProperties(usuario, usuarioDTO);
+        BeanUtils.copyProperties(usuarioDTO, usuarioModel);
+        usuarioModel.setStatus(UsuarioStatus.ATIVO);
+        usuarioModel.setDtCriacao(Instant.now());
+        usuarioModel = usuarioRepository.save(usuarioModel);
 
-        return usuarioDTO;
+        return usuarioModel;
     }
 
     @Override
-    public UsuarioDTO findById(UUID id) {
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
-        Usuario usuario = usuarioOptional.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
-        UsuarioDTO usuarioDTO = new UsuarioDTO();
-        BeanUtils.copyProperties(usuario, usuarioDTO);
-        return usuarioDTO;
+    public UsuarioModel update(UsuarioDTO usuarioDTO) {
+        Optional<UsuarioModel> usuarioModelOptional = usuarioRepository.findById(usuarioDTO.getId());
+        UsuarioModel usuarioModel = usuarioModelOptional.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+        if(usuarioRepository.existsByLogin(usuarioDTO.getLogin())) {
+            throw new ExistingAttributeException("Login já cadastrado");
+        }
+        if(usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
+            throw new ExistingAttributeException("E-mail já cadastrado");
+        }
+
+        BeanUtils.copyProperties(usuarioDTO, usuarioModel);
+
+        if(usuarioModel.getSenha() != null) {
+            usuarioModel.setSenha(usuarioModelOptional.get().getSenha());
+        }
+        usuarioModel.setLogin(usuarioModelOptional.get().getLogin());
+        usuarioModel.setDtCriacao(usuarioModelOptional.get().getDtCriacao());
+        usuarioModel.setDtUltAlteracao(Instant.now());
+        usuarioModel = usuarioRepository.save(usuarioModel);
+
+        return usuarioModel;
     }
 
     @Override
-    public List<Usuario> findAll() {
+    public UsuarioModel findById(UUID id) {
+        Optional<UsuarioModel> usuarioModelOptional = usuarioRepository.findById(id);
+        UsuarioModel usuarioModel = usuarioModelOptional.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+        return usuarioModel;
+    }
+
+    @Override
+    public List<UsuarioModel> findAll() {
         return usuarioRepository.findAll();
+    }
+
+    @Override
+    public boolean existsByLogin(String login) {
+        return usuarioRepository.existsByLogin(login);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return usuarioRepository.existsByEmail(email);
     }
 }

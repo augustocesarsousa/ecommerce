@@ -1,18 +1,22 @@
 package com.ecommerce.ms_usuario.services;
 
 import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
-import com.ecommerce.ms_usuario.models.Usuario;
+import com.ecommerce.ms_usuario.models.UsuarioModel;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface UsuarioService {
-    UsuarioDTO create(UsuarioDTO usuarioDTO);
+    UsuarioModel create(UsuarioDTO usuarioDTO);
 
-    UsuarioDTO update(UsuarioDTO usuarioDTO);
+    UsuarioModel update(UsuarioDTO usuarioDTO);
 
-    UsuarioDTO findById(UUID id);
+    UsuarioModel findById(UUID id);
 
-    List<Usuario> findAll();
+    List<UsuarioModel> findAll();
+
+    boolean existsByLogin(String login);
+
+    boolean existsByEmail(String email);
 }

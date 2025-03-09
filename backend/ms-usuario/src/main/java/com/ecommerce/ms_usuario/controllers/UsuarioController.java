@@ -1,15 +1,17 @@
 package com.ecommerce.ms_usuario.controllers;
 
 import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
-import com.ecommerce.ms_usuario.models.Usuario;
+import com.ecommerce.ms_usuario.models.UsuarioModel;
 import com.ecommerce.ms_usuario.services.UsuarioService;
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -21,28 +23,26 @@ public class UsuarioController {
     UsuarioService usuarioService;
 
     @PostMapping("/criar")
-    public ResponseEntity<UsuarioDTO> create(@RequestBody
-                                             @JsonView(UsuarioDTO.UsuarioView.Cadastro.class)
-                                             UsuarioDTO usuarioDTO) {
-        UsuarioDTO novoUsuarioDTO = usuarioService.create(usuarioDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuarioDTO);
+    public ResponseEntity<UsuarioModel> create(@RequestBody
+                                             @JsonView(UsuarioDTO.UsuarioView.Cadastrar.class)
+                                             @Valid UsuarioDTO usuarioDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.create(usuarioDTO));
     }
 
     @PutMapping("/atualizar")
-    public ResponseEntity<UsuarioDTO> update(@RequestBody
+    public ResponseEntity<UsuarioModel> update(@RequestBody
                                              @JsonView(UsuarioDTO.UsuarioView.Atualizar.class)
-                                             UsuarioDTO usuarioDTO) {
-        UsuarioDTO usuarioAtualizadoDTO = usuarioService.update(usuarioDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizadoDTO);
+                                             @Valid UsuarioDTO usuarioDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.update(usuarioDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> findById(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<UsuarioModel> findById(@PathVariable(value = "id") UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> findAll() {
+    public ResponseEntity<List<UsuarioModel>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findAll());
     }
 }

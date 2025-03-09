@@ -10,14 +10,14 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "TB_USUARIO")
-public class Usuario implements Serializable {
+public class UsuarioModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,7 @@ public class Usuario implements Serializable {
     @Column(nullable = false)
     private String telefone;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -52,8 +52,10 @@ public class Usuario implements Serializable {
 
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime dtCriacao;
+    private Instant dtCriacao;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime dtUltAlteracao;
+    private Instant dtUltAlteracao;
+
+    private UUID usuarioUltAlteracao;
 }

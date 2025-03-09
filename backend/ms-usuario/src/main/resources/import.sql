@@ -1,0 +1,2 @@
+INSERT INTO tb_usuario	(id, nome, login, senha, telefone, email, status, perfil, dt_criacao) VALUES ('2ef38163-8438-43f2-847b-200e5e01b78f', 'Teste', 'teste', '1234', '11912345678', 'teste@email.com', 'ATIVO', 'ADMIN', '2025-03-08 00:00:00.000000')
+INSERT INTO tb_usuario	(id, nome, login, senha, telefone, email, status, perfil, dt_criacao) VALUES ('1ef38163-8438-43f2-847b-200e5e01b78f', 'Teste2', 'teste2', '1234', '11912345678', 'teste2@email.com', 'ATIVO', 'ADMIN', '2025-03-08 00:00:00.000000')

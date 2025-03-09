@@ -2,9 +2,12 @@ package com.ecommerce.ms_usuario.dtos;
 
 import com.ecommerce.ms_usuario.enums.UsuarioPerfil;
 import com.ecommerce.ms_usuario.enums.UsuarioStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.io.Serial;
@@ -19,7 +22,7 @@ public class UsuarioDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public interface UsuarioView {
-        public static interface Cadastro {}
+        public static interface Cadastrar {}
         public static interface Atualizar {}
         public static interface NaoExibir {}
     }
@@ -27,25 +30,34 @@ public class UsuarioDTO implements Serializable {
     @JsonView(UsuarioView.Atualizar.class)
     private UUID id;
 
-    @JsonView({UsuarioView.Cadastro.class, UsuarioView.Atualizar.class})
+    @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
+    @Size(min = 4, max = 32, message = "O nome deve ter entre 4 e 32 caracteres")
+    @NotBlank(message = "O nome não pode estar em branco")
+    @Pattern(regexp = "^(?!\\d+$).*$", message = "O nome não pode conter apenas números")
     private String nome;
 
-    @JsonView(UsuarioView.Cadastro.class)
+    @JsonView(UsuarioView.Cadastrar.class)
+    @Size(min = 4, max = 32, message = "O login deve ter entre 4 e 32 caracteres")
+    @NotBlank(message = "O login não pode estar em branco")
+    @Pattern(regexp = "^(?!\\d+$).*$", message = "O login não pode conter apenas números")
     private String login;
 
-    @JsonView({UsuarioView.Cadastro.class, UsuarioView.Atualizar.class})
+    @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
+    @Size(min = 4, max = 32, message = "A senha deve ter entre 4 e 32 caracteres")
     private String senha;
 
-    @JsonView({UsuarioView.Cadastro.class, UsuarioView.Atualizar.class})
+    @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
+    @Pattern(regexp = "^\\d{10,11}$", message = "Telefone inválido")
     private String telefone;
 
-    @JsonView({UsuarioView.Cadastro.class, UsuarioView.Atualizar.class})
+    @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
+    @Email(message = "E-mail inválido")
     private String email;
 
     @JsonView(UsuarioView.Atualizar.class)
     private UsuarioStatus status;
 
-    @JsonView({UsuarioView.Cadastro.class, UsuarioView.Atualizar.class})
+    @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
     private UsuarioPerfil perfil;
 
     @JsonView(UsuarioView.NaoExibir.class)
@@ -53,4 +65,7 @@ public class UsuarioDTO implements Serializable {
 
     @JsonView(UsuarioView.NaoExibir.class)
     private LocalDateTime dtUltAlteracao;
+
+    @JsonView(UsuarioView.Atualizar.class)
+    private UUID usuarioUltAlteracao;
 }
