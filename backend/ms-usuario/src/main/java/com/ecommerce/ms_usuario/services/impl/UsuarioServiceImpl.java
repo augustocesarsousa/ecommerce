@@ -7,15 +7,14 @@ import com.ecommerce.ms_usuario.repositories.UsuarioRepository;
 import com.ecommerce.ms_usuario.services.UsuarioService;
 import com.ecommerce.ms_usuario.services.exceptions.ExistingAttributeException;
 import com.ecommerce.ms_usuario.services.exceptions.ResourceNotFoundException;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,12 +34,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         UsuarioModel usuarioModel = new UsuarioModel();
 
-        BeanUtils.copyProperties(usuarioDTO, usuarioModel);
-        usuarioModel.setStatus(UsuarioStatus.ATIVO);
-        usuarioModel.setDtCriacao(Instant.now());
-        usuarioModel = usuarioRepository.save(usuarioModel);
+        usuarioDTO.setStatus(UsuarioStatus.ATIVO);
+        usuarioDTO.setDtCriacao(LocalDateTime.now(ZoneId.of("UTC")));
 
-        return usuarioModel;
+        BeanUtils.copyProperties(usuarioDTO, usuarioModel);
+        return usuarioRepository.save(usuarioModel);
     }
 
     @Override
@@ -54,38 +52,25 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new ExistingAttributeException("E-mail já cadastrado");
         }
 
-        BeanUtils.copyProperties(usuarioDTO, usuarioModel);
-
-        if(usuarioModel.getSenha() != null) {
-            usuarioModel.setSenha(usuarioModelOptional.get().getSenha());
+        if(usuarioDTO.getSenha() == null) {
+            usuarioDTO.setSenha(usuarioModel.getSenha());
         }
-        usuarioModel.setLogin(usuarioModelOptional.get().getLogin());
-        usuarioModel.setDtCriacao(usuarioModelOptional.get().getDtCriacao());
-        usuarioModel.setDtUltAlteracao(Instant.now());
-        usuarioModel = usuarioRepository.save(usuarioModel);
+        usuarioDTO.setLogin(usuarioModel.getLogin());
+        usuarioDTO.setDtCriacao(usuarioModel.getDtCriacao());
+        usuarioDTO.setDtUltAlteracao(LocalDateTime.now(ZoneId.of("UTC")));
 
-        return usuarioModel;
+        BeanUtils.copyProperties(usuarioDTO, usuarioModel);
+        return usuarioRepository.save(usuarioModel);
     }
 
     @Override
     public UsuarioModel findById(UUID id) {
         Optional<UsuarioModel> usuarioModelOptional = usuarioRepository.findById(id);
-        UsuarioModel usuarioModel = usuarioModelOptional.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
-        return usuarioModel;
+        return usuarioModelOptional.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }
 
     @Override
-    public List<UsuarioModel> findAll() {
-        return usuarioRepository.findAll();
-    }
-
-    @Override
-    public boolean existsByLogin(String login) {
-        return usuarioRepository.existsByLogin(login);
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return usuarioRepository.existsByEmail(email);
+    public Page<UsuarioModel> findAll(Pageable pageable) {
+        return usuarioRepository.findAll(pageable);
     }
 }

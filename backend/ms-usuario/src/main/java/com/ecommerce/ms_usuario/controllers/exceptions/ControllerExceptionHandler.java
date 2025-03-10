@@ -20,7 +20,7 @@ public class ControllerExceptionHandler {
 
         standardError.setTimestamp(Instant.now());
         standardError.setStatus(httpStatus.value());
-        standardError.setError("Resouce not found");
+        standardError.setError("Resource not found");
         standardError.setMessage(e.getMessage());
         standardError.setPath(request.getRequestURI());
 
