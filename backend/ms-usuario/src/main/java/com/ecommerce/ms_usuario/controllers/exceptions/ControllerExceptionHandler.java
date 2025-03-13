@@ -5,6 +5,7 @@ import com.ecommerce.ms_usuario.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -59,5 +60,19 @@ public class ControllerExceptionHandler {
         }
 
         return ResponseEntity.status(httpStatus).body(validationError);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<StandardError> requestError(HttpMessageNotReadableException e, HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+        StandardError standardError = new StandardError();
+
+        standardError.setTimestamp(Instant.now());
+        standardError.setStatus(httpStatus.value());
+        standardError.setError("Request error");
+        standardError.setMessage(e.getMessage());
+        standardError.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(httpStatus).body(standardError);
     }
 }

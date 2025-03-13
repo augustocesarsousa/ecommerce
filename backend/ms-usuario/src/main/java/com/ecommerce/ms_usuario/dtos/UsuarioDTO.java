@@ -2,6 +2,7 @@ package com.ecommerce.ms_usuario.dtos;
 
 import com.ecommerce.ms_usuario.enums.UsuarioPerfil;
 import com.ecommerce.ms_usuario.enums.UsuarioStatus;
+import com.ecommerce.ms_usuario.validations.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.constraints.Email;
@@ -27,7 +28,7 @@ public class UsuarioDTO implements Serializable {
         public static interface NaoExibir {}
     }
 
-    @JsonView(UsuarioView.Atualizar.class)
+    @JsonView(UsuarioView.NaoExibir.class)
     private UUID id;
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
@@ -40,6 +41,7 @@ public class UsuarioDTO implements Serializable {
     @Size(min = 4, max = 32, message = "O login deve ter entre 4 e 32 caracteres")
     @NotBlank(groups = UsuarioView.Cadastrar.class, message = "O login não pode estar em branco")
     @Pattern(regexp = "^(?!\\d+$).*$", message = "O login não pode conter apenas números")
+    @UsuarioLoginCreateConstraint(groups = UsuarioView.Cadastrar.class)
     private String login;
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
@@ -52,6 +54,8 @@ public class UsuarioDTO implements Serializable {
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
     @Email(message = "E-mail inválido")
+    @UsuarioEmailCreateConstraint(groups = UsuarioView.Cadastrar.class)
+    @UsuarioEmailUpdateConstraint(groups = UsuarioView.Atualizar.class)
     private String email;
 
     @JsonView(UsuarioView.Atualizar.class)
@@ -67,5 +71,6 @@ public class UsuarioDTO implements Serializable {
     private LocalDateTime dtUltAlteracao;
 
     @JsonView(UsuarioView.Atualizar.class)
+    @UsuarioUltAltUpdateConstraint(groups = UsuarioView.Atualizar.class)
     private UUID usuarioUltAlteracao;
 }

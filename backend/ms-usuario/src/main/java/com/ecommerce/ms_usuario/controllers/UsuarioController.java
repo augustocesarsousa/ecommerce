@@ -12,9 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,18 +25,18 @@ public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
 
-    @PostMapping("/criar")
+    @PostMapping
     public ResponseEntity<UsuarioModel> create(@RequestBody
                                              @JsonView(UsuarioDTO.UsuarioView.Cadastrar.class)
-                                             @Valid UsuarioDTO usuarioDTO) {
+                                             @Validated(UsuarioDTO.UsuarioView.Cadastrar.class) UsuarioDTO usuarioDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.create(usuarioDTO));
     }
 
-    @PutMapping("/atualizar")
-    public ResponseEntity<UsuarioModel> update(@RequestBody
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioModel> update(@PathVariable(value = "id") UUID id, @RequestBody
                                              @JsonView(UsuarioDTO.UsuarioView.Atualizar.class)
-                                             @Valid UsuarioDTO usuarioDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.update(usuarioDTO));
+                                             @Validated(UsuarioDTO.UsuarioView.Atualizar.class) UsuarioDTO usuarioDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.update(id, usuarioDTO));
     }
 
     @GetMapping("/{id}")

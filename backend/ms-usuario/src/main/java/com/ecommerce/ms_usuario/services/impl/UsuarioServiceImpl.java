@@ -26,12 +26,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioModel create(UsuarioDTO usuarioDTO) {
-        if(usuarioRepository.existsByLogin(usuarioDTO.getLogin())) {
-            throw new ExistingAttributeException("Login já cadastrado");
-        }
-        if(usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
-            throw new ExistingAttributeException("E-mail já cadastrado");
-        }
+//        if(usuarioRepository.existsByLogin(usuarioDTO.getLogin())) {
+//            throw new ExistingAttributeException("Login já cadastrado");
+//        }
+//        if(usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
+//            throw new ExistingAttributeException("E-mail já cadastrado");
+//        }
         UsuarioModel usuarioModel = new UsuarioModel();
 
         usuarioDTO.setStatus(UsuarioStatus.ATIVO);
@@ -42,19 +42,14 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioModel update(UsuarioDTO usuarioDTO) {
-        Optional<UsuarioModel> usuarioModelOptional = usuarioRepository.findById(usuarioDTO.getId());
-        UsuarioModel usuarioModel = usuarioModelOptional.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
-        if(usuarioRepository.existsByLogin(usuarioDTO.getLogin())) {
-            throw new ExistingAttributeException("Login já cadastrado");
-        }
-        if(usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
-            throw new ExistingAttributeException("E-mail já cadastrado");
-        }
+    public UsuarioModel update(UUID id, UsuarioDTO usuarioDTO) {
+        Optional<UsuarioModel> usuarioModelOptional = usuarioRepository.findById(id);
+        UsuarioModel usuarioModel = usuarioModelOptional.orElseThrow(() -> new ResourceNotFoundException("Usuário para atualizar não encontrado"));
 
         if(usuarioDTO.getSenha() == null) {
             usuarioDTO.setSenha(usuarioModel.getSenha());
         }
+        usuarioDTO.setId(usuarioModel.getId());
         usuarioDTO.setLogin(usuarioModel.getLogin());
         usuarioDTO.setDtCriacao(usuarioModel.getDtCriacao());
         usuarioDTO.setDtUltAlteracao(LocalDateTime.now(ZoneId.of("UTC")));
