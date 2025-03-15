@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/usuarios")
-public class UsuarioController {
+public class  UsuarioController {
 
     @Autowired
     UsuarioService usuarioService;
@@ -48,6 +51,12 @@ public class UsuarioController {
     public ResponseEntity<Page<UsuarioModel>> findAll(UsuarioQueryFilter filter,
                                                         @PageableDefault(page = 0,size = 10,sort = "id",direction = Sort.Direction.ASC)
                                                         Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findAll(filter.toSpecification(), pageable));
+        Page<UsuarioModel> usuarioModelPage = usuarioService.findAll(filter.toSpecification(), pageable);
+        if(!usuarioModelPage.isEmpty()){
+            for(UsuarioModel usuarioModel : usuarioModelPage.toList()) {
+                usuarioModel.add(linkTo(methodOn(UsuarioController.class).findById(usuarioModel.getId())).withSelfRel());
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioModelPage);
     }
 }
