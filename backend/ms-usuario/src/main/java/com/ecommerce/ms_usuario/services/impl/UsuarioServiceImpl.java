@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -65,7 +66,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Page<UsuarioModel> findAll(Pageable pageable) {
-        return usuarioRepository.findAll(pageable);
+    public Page<UsuarioModel> findAll(Specification<UsuarioModel> spec, Pageable pageable) {
+        return usuarioRepository.findAll(spec, pageable);
     }
 }

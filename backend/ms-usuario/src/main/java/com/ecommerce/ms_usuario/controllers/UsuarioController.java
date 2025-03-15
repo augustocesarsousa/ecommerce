@@ -3,8 +3,8 @@ package com.ecommerce.ms_usuario.controllers;
 import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
 import com.ecommerce.ms_usuario.models.UsuarioModel;
 import com.ecommerce.ms_usuario.services.UsuarioService;
+import com.ecommerce.ms_usuario.spacifications.queryFilters.UsuarioQueryFilter;
 import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,12 +45,9 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UsuarioModel>> findAll(@PageableDefault(
-                                                            page = 0,
-                                                            size = 10,
-                                                            sort = "id",
-                                                            direction = Sort.Direction.ASC)
-                                                          Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findAll(pageable));
+    public ResponseEntity<Page<UsuarioModel>> findAll(UsuarioQueryFilter filter,
+                                                        @PageableDefault(page = 0,size = 10,sort = "id",direction = Sort.Direction.ASC)
+                                                        Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findAll(filter.toSpecification(), pageable));
     }
 }
