@@ -39,4 +39,13 @@ public class UsuarioRepositoryTests {
         Assertions.assertNotNull(usuarioModel);
     }
 
+    @Test
+    void findByEmailShouldReturnNullWhenEmailDoesNotExists() {
+        String notExistisEmail = "dick.grayson@email.com";
+
+        UsuarioModel usuarioModel = usuarioRepository.findByEmail(notExistisEmail);
+
+        Assertions.assertNull(usuarioModel);
+    }
+
 }
