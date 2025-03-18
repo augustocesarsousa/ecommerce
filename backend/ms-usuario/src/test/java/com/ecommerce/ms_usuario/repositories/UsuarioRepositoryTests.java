@@ -21,4 +21,13 @@ public class UsuarioRepositoryTests {
         Assertions.assertNotNull(usuarioModel);
     }
 
+    @Test
+    void findByLoginShouldNullWhenLoginDoesNotExists() {
+        String notExistsLogin = "robin";
+
+        UsuarioModel usuarioModel = usuarioRepository.findByLogin(notExistsLogin);
+
+        Assertions.assertNull(usuarioModel);
+    }
+
 }
