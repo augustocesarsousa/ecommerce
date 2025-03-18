@@ -30,4 +30,13 @@ public class UsuarioRepositoryTests {
         Assertions.assertNull(usuarioModel);
     }
 
+    @Test
+    void findByEmailShouldReturnModelWhenEmailExists() {
+        String existsEmail = "bruce.wayne@email.com";
+
+        UsuarioModel usuarioModel = usuarioRepository.findByEmail(existsEmail);
+
+        Assertions.assertNotNull(usuarioModel);
+    }
+
 }
