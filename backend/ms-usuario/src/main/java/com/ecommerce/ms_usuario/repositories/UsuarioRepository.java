@@ -8,10 +8,6 @@ import java.util.UUID;
 
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, UUID>, JpaSpecificationExecutor<UsuarioModel> {
 
-    boolean existsByLogin(String login);
-
-    boolean existsByEmail(String email);
-
     UsuarioModel findByLogin(String login);
 
     UsuarioModel findByEmail(String email);
