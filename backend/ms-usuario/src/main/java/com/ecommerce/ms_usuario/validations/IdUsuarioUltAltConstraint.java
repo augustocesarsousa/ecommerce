@@ -5,10 +5,10 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = UsuarioUltAltUpdateConstraintImpl.class)
+@Constraint(validatedBy = IdUsuarioUltAltConstraintImpl.class)
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UsuarioUltAltUpdateConstraint {
+public @interface IdUsuarioUltAltConstraint {
     String message() default "Invalid last user update";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

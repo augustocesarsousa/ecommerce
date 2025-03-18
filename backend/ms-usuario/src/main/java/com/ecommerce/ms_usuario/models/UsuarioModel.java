@@ -58,5 +58,5 @@ public class UsuarioModel extends RepresentationModel<UsuarioModel> implements S
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime dtUltAlteracao;
 
-    private UUID usuarioUltAlteracao;
+    private UUID idUsuarioUltAlteracao;
 }

@@ -70,7 +70,7 @@ public class UsuarioDTO implements Serializable {
     @JsonView(UsuarioView.NaoExibir.class)
     private LocalDateTime dtUltAlteracao;
 
-    @JsonView(UsuarioView.Atualizar.class)
-    @UsuarioUltAltUpdateConstraint(groups = UsuarioView.Atualizar.class)
-    private UUID usuarioUltAlteracao;
+    @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
+    @IdUsuarioUltAltConstraint(groups = {UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
+    private UUID idUsuarioUltAlteracao;
 }

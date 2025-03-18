@@ -27,16 +27,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioModel create(UsuarioDTO usuarioDTO) {
-//        if(usuarioRepository.existsByLogin(usuarioDTO.getLogin())) {
-//            throw new ExistingAttributeException("Login já cadastrado");
-//        }
-//        if(usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
-//            throw new ExistingAttributeException("E-mail já cadastrado");
-//        }
         UsuarioModel usuarioModel = new UsuarioModel();
 
         usuarioDTO.setStatus(UsuarioStatus.ATIVO);
         usuarioDTO.setDtCriacao(LocalDateTime.now(ZoneId.of("UTC")));
+        usuarioDTO.setDtUltAlteracao(usuarioDTO.getDtCriacao());
 
         BeanUtils.copyProperties(usuarioDTO, usuarioModel);
         return usuarioRepository.save(usuarioModel);
