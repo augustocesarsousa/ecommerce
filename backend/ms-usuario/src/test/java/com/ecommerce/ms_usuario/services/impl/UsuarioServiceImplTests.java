@@ -67,4 +67,12 @@ public class UsuarioServiceImplTests {
             usuarioService.update(notExistingId, usuarioValidoDTO);
         });
     }
+
+    @Test
+    public void findByIdShouldReturnEntityWhenExistingId() {
+        UsuarioModel usuarioModel = usuarioService.findById(existingId);
+
+        Assertions.assertNotNull(usuarioModel);
+        Assertions.assertEquals(usuarioModel.getId(), existingId);
+    }
 }
