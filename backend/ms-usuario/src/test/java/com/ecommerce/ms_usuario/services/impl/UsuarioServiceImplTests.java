@@ -12,7 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -27,12 +31,16 @@ public class UsuarioServiceImplTests {
     private UsuarioDTO usuarioValidoDTO;
     private UsuarioModel usuarioModel;
 
+    private UUID existingId;
+
     @BeforeEach
     void setUp() throws Exception {
         usuarioModel = UsuarioFactory.criarUsuarioModel();
         usuarioValidoDTO = UsuarioFactory.criarUsuarioValidoDTO();
+        existingId = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
 
         when(usuarioRepository.save(any())).thenReturn(usuarioModel);
+        when(usuarioRepository.findById(existingId)).thenReturn(Optional.of(usuarioModel));
     }
 
     @Test
@@ -40,5 +48,13 @@ public class UsuarioServiceImplTests {
         UsuarioModel usuarioModel = usuarioService.create(usuarioValidoDTO);
 
         Assertions.assertNotNull(usuarioModel.getId());
+    }
+
+    @Test
+    public void updateShouldPersistEntityWhenValidDatas() {
+        UsuarioModel usuarioModel = usuarioService.update(existingId, usuarioValidoDTO);
+
+        Assertions.assertNotNull(usuarioModel);
+        Assertions.assertEquals(usuarioModel.getId(), existingId);
     }
 }

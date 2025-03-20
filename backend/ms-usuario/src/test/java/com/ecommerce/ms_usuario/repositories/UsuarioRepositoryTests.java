@@ -13,43 +13,43 @@ public class UsuarioRepositoryTests {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    private String existsLogin;
-    private String notExistsLogin;
-    private String existsEmail;
-    private String notExistisEmail;
+    private String existingLogin;
+    private String notExistingLogin;
+    private String existingEmail;
+    private String notExistingEmail;
 
     @BeforeEach
     void setUp() throws Exception {
-        existsLogin = "batman";
-        notExistsLogin = "robin";
-        existsEmail = "bruce.wayne@email.com";
-        notExistisEmail = "dick.grayson@email.com";
+        existingLogin = "batman";
+        notExistingLogin = "robin";
+        existingEmail = "bruce.wayne@email.com";
+        notExistingEmail = "dick.grayson@email.com";
     }
 
     @Test
     public void findByLoginShouldReturnModelWhenLoginExists() {
-        UsuarioModel usuarioModel = usuarioRepository.findByLogin(existsLogin);
+        UsuarioModel usuarioModel = usuarioRepository.findByLogin(existingLogin);
 
         Assertions.assertNotNull(usuarioModel);
     }
 
     @Test
     public void findByLoginShouldNullWhenLoginDoesNotExists() {
-        UsuarioModel usuarioModel = usuarioRepository.findByLogin(notExistsLogin);
+        UsuarioModel usuarioModel = usuarioRepository.findByLogin(notExistingLogin);
 
         Assertions.assertNull(usuarioModel);
     }
 
     @Test
     public void findByEmailShouldReturnModelWhenEmailExists() {
-        UsuarioModel usuarioModel = usuarioRepository.findByEmail(existsEmail);
+        UsuarioModel usuarioModel = usuarioRepository.findByEmail(existingEmail);
 
         Assertions.assertNotNull(usuarioModel);
     }
 
     @Test
     public void findByEmailShouldReturnNullWhenEmailDoesNotExists() {
-        UsuarioModel usuarioModel = usuarioRepository.findByEmail(notExistisEmail);
+        UsuarioModel usuarioModel = usuarioRepository.findByEmail(notExistingEmail);
 
         Assertions.assertNull(usuarioModel);
     }
