@@ -4,6 +4,7 @@ import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
 import com.ecommerce.ms_usuario.factories.UsuarioFactory;
 import com.ecommerce.ms_usuario.models.UsuarioModel;
 import com.ecommerce.ms_usuario.repositories.UsuarioRepository;
+import com.ecommerce.ms_usuario.services.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,12 +33,14 @@ public class UsuarioServiceImplTests {
     private UsuarioModel usuarioModel;
 
     private UUID existingId;
+    private UUID notExistingId;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioModel = UsuarioFactory.criarUsuarioModel();
         usuarioValidoDTO = UsuarioFactory.criarUsuarioValidoDTO();
         existingId = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        notExistingId = UUID.fromString("3ef38163-8438-43f2-847b-200e5e01b78f");
 
         when(usuarioRepository.save(any())).thenReturn(usuarioModel);
         when(usuarioRepository.findById(existingId)).thenReturn(Optional.of(usuarioModel));
@@ -56,5 +59,12 @@ public class UsuarioServiceImplTests {
 
         Assertions.assertNotNull(usuarioModel);
         Assertions.assertEquals(usuarioModel.getId(), existingId);
+    }
+
+    @Test
+    public void updateShouldThrowResourceNotFoundExceptionWhenNotExistingId() {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            usuarioService.update(notExistingId, usuarioValidoDTO);
+        });
     }
 }
