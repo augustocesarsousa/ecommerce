@@ -75,4 +75,11 @@ public class UsuarioServiceImplTests {
         Assertions.assertNotNull(usuarioModel);
         Assertions.assertEquals(usuarioModel.getId(), existingId);
     }
+
+    @Test
+    public void findByIdShouldThrowResourceNotFoundExceptionWhenNotExistingId() {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            usuarioService.findById(notExistingId);
+        });
+    }
 }
