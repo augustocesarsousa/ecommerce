@@ -46,6 +46,7 @@ public class UsuarioDTO implements Serializable {
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
     @Size(min = 4, max = 32, message = "A senha deve ter entre 4 e 32 caracteres")
+    @NotBlank(groups = UsuarioView.Cadastrar.class, message = "A senha não pode estar em branco")
     private String senha;
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
