@@ -89,4 +89,17 @@ public class UsuarioControllerTests {
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("O nome deve ter entre 4 e 32 caracteres"));
     }
+
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenNameIsBlank() throws Exception {
+        usuarioDTO.setNome("");
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[1].message")
+                        .value("O nome não pode estar em branco"));
+    }
 }
