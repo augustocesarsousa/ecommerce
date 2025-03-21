@@ -99,8 +99,8 @@ public class UsuarioControllerTests {
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.errors[1].message")
-                        .value("O nome não pode estar em branco"));
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("Nome não informado"));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class UsuarioControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message")
-                        .value("O nome não pode estar em branco"));
+                        .value("Nome não informado"));
     }
 
     @Test
@@ -165,6 +165,19 @@ public class UsuarioControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message")
-                        .value("O login não pode estar em branco"));
+                        .value("Login não informado"));
+    }
+
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenLoginIsNull() throws Exception {
+        usuarioDTO.setLogin(null);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("Login não informado"));
     }
 }

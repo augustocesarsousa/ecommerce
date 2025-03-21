@@ -33,13 +33,13 @@ public class UsuarioDTO implements Serializable {
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
     @Size(min = 4, max = 32, message = "O nome deve ter entre 4 e 32 caracteres")
-    @NotBlank(message = "O nome não pode estar em branco")
+    @NotBlank(message = "Nome não informado")
     @Pattern(regexp = "^(?!\\d+$).*$", message = "O nome não pode conter apenas números")
     private String nome;
 
     @JsonView(UsuarioView.Cadastrar.class)
     @Size(min = 4, max = 32, message = "O login deve ter entre 4 e 32 caracteres")
-    @NotBlank(message = "O login não pode estar em branco")
+    @NotBlank(message = "Login não informado")
     @Pattern(regexp = "^(?!\\d+$).*$", message = "O login não pode conter apenas números")
     @UsuarioLoginCreateConstraint(groups = UsuarioView.Cadastrar.class)
     private String login;
