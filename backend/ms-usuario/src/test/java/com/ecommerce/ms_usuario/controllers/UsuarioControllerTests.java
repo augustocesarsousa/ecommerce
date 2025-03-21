@@ -41,16 +41,19 @@ public class UsuarioControllerTests {
     private UsuarioDTO usuarioDTO;
     private UsuarioModel usuarioModel;
     private UUID existingID;
+    private String existinglogin;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioDTO = UsuarioFactory.criarUsuarioValidoDTO();
         usuarioModel = UsuarioFactory.criarUsuarioModel();
         existingID = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        existinglogin = "batman";
 
         when(usuarioService.create(any())).thenReturn(usuarioModel);
 
         when(usuarioRepository.findById(existingID)).thenReturn(Optional.of(usuarioModel));
+        when(usuarioRepository.findByLogin(existinglogin)).thenReturn(usuarioModel);
     }
 
     @Test
@@ -192,5 +195,18 @@ public class UsuarioControllerTests {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("O login não pode conter apenas números"));
+    }
+
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenLoginAlreadyExisting() throws Exception {
+        usuarioDTO.setLogin("batman");
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("Login já cadastrado"));
     }
 }

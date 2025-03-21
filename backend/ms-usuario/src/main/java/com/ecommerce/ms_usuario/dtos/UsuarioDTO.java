@@ -41,7 +41,7 @@ public class UsuarioDTO implements Serializable {
     @Size(min = 4, max = 32, message = "O login deve ter entre 4 e 32 caracteres")
     @NotBlank(message = "Login não informado")
     @Pattern(regexp = "^(?!\\d+$).*$", message = "O login não pode conter apenas números")
-    @UsuarioLoginCreateConstraint(groups = UsuarioView.Cadastrar.class)
+    @UsuarioLoginCreateConstraint
     private String login;
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
