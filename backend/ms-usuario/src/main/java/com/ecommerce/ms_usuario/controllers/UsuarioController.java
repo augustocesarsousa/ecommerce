@@ -5,6 +5,7 @@ import com.ecommerce.ms_usuario.models.UsuarioModel;
 import com.ecommerce.ms_usuario.services.UsuarioService;
 import com.ecommerce.ms_usuario.spacifications.queryFilters.UsuarioQueryFilter;
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,7 @@ public class  UsuarioController {
     @PostMapping
     public ResponseEntity<UsuarioModel> create(@RequestBody
                                              @JsonView(UsuarioDTO.UsuarioView.Cadastrar.class)
+                                             @Valid
                                              @Validated(UsuarioDTO.UsuarioView.Cadastrar.class) UsuarioDTO usuarioDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.create(usuarioDTO));
     }
@@ -38,6 +40,7 @@ public class  UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioModel> update(@PathVariable(value = "id") UUID id, @RequestBody
                                              @JsonView(UsuarioDTO.UsuarioView.Atualizar.class)
+                                             @Valid
                                              @Validated(UsuarioDTO.UsuarioView.Atualizar.class) UsuarioDTO usuarioDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.update(id, usuarioDTO));
     }

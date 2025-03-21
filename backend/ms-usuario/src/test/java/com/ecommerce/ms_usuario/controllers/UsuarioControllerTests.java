@@ -61,6 +61,19 @@ public class UsuarioControllerTests {
                 .content(jsonBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists());
+                .andExpect(jsonPath("$.dtCriacao").exists());
+    }
+
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenNameSizeIsThree() throws Exception {
+        usuarioDTO.setNome("abc");
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("O nome deve ter entre 4 e 32 caracteres"));
     }
 }
