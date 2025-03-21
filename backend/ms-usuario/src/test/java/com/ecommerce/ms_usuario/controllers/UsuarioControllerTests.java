@@ -180,4 +180,17 @@ public class UsuarioControllerTests {
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("Login não informado"));
     }
+
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenLoginHasOnlyNumbers() throws Exception {
+        usuarioDTO.setLogin("1234");
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("O login não pode conter apenas números"));
+    }
 }
