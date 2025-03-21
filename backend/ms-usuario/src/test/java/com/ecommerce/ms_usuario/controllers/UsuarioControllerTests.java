@@ -141,4 +141,17 @@ public class UsuarioControllerTests {
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("O login deve ter entre 4 e 32 caracteres"));
     }
+
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenLoginSizeIsThirtyThree() throws Exception {
+        usuarioDTO.setLogin("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("O login deve ter entre 4 e 32 caracteres"));
+    }
 }
