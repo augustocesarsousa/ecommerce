@@ -227,4 +227,14 @@ public class UsuarioControllerTests {
                 .andExpect(jsonPath("$.idUsuarioUltAlteracao").exists());
     }
 
+    @Test
+    public void updateShouldReturnNotFoundWhenIdDoesNotExisting() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", notExistingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
 }
