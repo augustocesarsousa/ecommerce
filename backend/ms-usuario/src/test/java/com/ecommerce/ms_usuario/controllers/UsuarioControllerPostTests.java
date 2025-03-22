@@ -211,4 +211,17 @@ public class UsuarioControllerPostTests {
                         .value("Login já cadastrado"));
     }
 
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenSenhaSizeIsThree() throws Exception {
+        usuarioDTO.setSenha("123");
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("A senha deve ter entre 4 e 32 caracteres"));
+    }
+
 }
