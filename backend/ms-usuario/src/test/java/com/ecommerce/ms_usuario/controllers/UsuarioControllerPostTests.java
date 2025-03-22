@@ -250,4 +250,17 @@ public class UsuarioControllerPostTests {
                         .value("A senha não pode estar em branco"));
     }
 
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenInvalidTelefone() throws Exception {
+        usuarioDTO.setTelefone("123");
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("Telefone inválido"));
+    }
+
 }
