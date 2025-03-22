@@ -237,4 +237,17 @@ public class UsuarioControllerPostTests {
                         .value("A senha deve ter entre 4 e 32 caracteres"));
     }
 
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenSenhaIsNull() throws Exception {
+        usuarioDTO.setSenha(null);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("A senha não pode estar em branco"));
+    }
+
 }
