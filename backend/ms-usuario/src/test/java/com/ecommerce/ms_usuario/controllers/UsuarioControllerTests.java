@@ -274,4 +274,17 @@ public class UsuarioControllerTests {
                 .andExpect(status().isUnprocessableEntity());
     }
 
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenNameIsNull() throws Exception {
+        usuarioDTO.setNome(null);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", existingID)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("Nome não informado"));
+    }
+
 }
