@@ -263,4 +263,15 @@ public class UsuarioControllerTests {
                         .value("O nome deve ter entre 4 e 32 caracteres"));
     }
 
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenNameIsBlank() throws Exception {
+        usuarioDTO.setNome("");
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", existingID)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
 }
