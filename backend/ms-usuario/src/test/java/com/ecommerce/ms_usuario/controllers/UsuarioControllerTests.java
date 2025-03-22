@@ -287,4 +287,17 @@ public class UsuarioControllerTests {
                         .value("Nome não informado"));
     }
 
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenNameHasOnlyNumbers() throws Exception {
+        usuarioDTO.setNome("1234");
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", existingID)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("O nome não pode conter apenas números"));
+    }
+
 }
