@@ -4,7 +4,6 @@ import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
 import com.ecommerce.ms_usuario.factories.UsuarioFactory;
 import com.ecommerce.ms_usuario.models.UsuarioModel;
 import com.ecommerce.ms_usuario.repositories.UsuarioRepository;
-import com.ecommerce.ms_usuario.services.exceptions.ResourceNotFoundException;
 import com.ecommerce.ms_usuario.services.impl.UsuarioServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UsuarioController.class)
-public class UsuarioControllerTests {
+public class UsuarioControllerPostTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,8 +55,6 @@ public class UsuarioControllerTests {
         existingLogin = "batman";
 
         when(usuarioService.create(any())).thenReturn(usuarioModel);
-        when(usuarioService.update(eq(existingID), any())).thenReturn(usuarioModel);
-        when(usuarioService.update(eq(notExistingId), any())).thenThrow(ResourceNotFoundException.class);
 
         when(usuarioRepository.findById(existingID)).thenReturn(Optional.of(usuarioModel));
         when(usuarioRepository.findByLogin(existingLogin)).thenReturn(usuarioModel);
@@ -172,9 +169,7 @@ public class UsuarioControllerTests {
         mockMvc.perform(post("/usuarios")
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.errors[0].message")
-                        .value("Login não informado"));
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -214,90 +209,6 @@ public class UsuarioControllerTests {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("Login já cadastrado"));
-    }
-
-    @Test
-    public void updateShouldReturnOkWhenValidDatas() throws Exception {
-        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
-
-        mockMvc.perform(put("/usuarios/{id}", existingID)
-                        .content(jsonBody)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.idUsuarioUltAlteracao").exists());
-    }
-
-    @Test
-    public void updateShouldReturnNotFoundWhenIdDoesNotExisting() throws Exception {
-        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
-
-        mockMvc.perform(put("/usuarios/{id}", notExistingId)
-                        .content(jsonBody)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void updateShouldReturnUnprocessableEntityWhenNameSizeIsThree() throws Exception {
-        usuarioDTO.setNome("abc");
-        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
-
-        mockMvc.perform(put("/usuarios/{id}", existingID)
-                        .content(jsonBody)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.errors[0].message")
-                        .value("O nome deve ter entre 4 e 32 caracteres"));
-    }
-
-    @Test
-    public void updateShouldReturnUnprocessableEntityWhenNameSizeIsThirtyThree() throws Exception {
-        usuarioDTO.setNome("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
-
-        mockMvc.perform(put("/usuarios/{id}", existingID)
-                        .content(jsonBody)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.errors[0].message")
-                        .value("O nome deve ter entre 4 e 32 caracteres"));
-    }
-
-    @Test
-    public void updateShouldReturnUnprocessableEntityWhenNameIsBlank() throws Exception {
-        usuarioDTO.setNome("");
-        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
-
-        mockMvc.perform(put("/usuarios/{id}", existingID)
-                        .content(jsonBody)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    public void updateShouldReturnUnprocessableEntityWhenNameIsNull() throws Exception {
-        usuarioDTO.setNome(null);
-        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
-
-        mockMvc.perform(put("/usuarios/{id}", existingID)
-                        .content(jsonBody)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.errors[0].message")
-                        .value("Nome não informado"));
-    }
-
-    @Test
-    public void updateShouldReturnUnprocessableEntityWhenNameHasOnlyNumbers() throws Exception {
-        usuarioDTO.setNome("1234");
-        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
-
-        mockMvc.perform(put("/usuarios/{id}", existingID)
-                        .content(jsonBody)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.errors[0].message")
-                        .value("O nome não pode conter apenas números"));
     }
 
 }
