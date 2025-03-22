@@ -32,29 +32,35 @@ public class UsuarioDTO implements Serializable {
     private UUID id;
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
-    @Size(min = 4, max = 32, message = "O nome deve ter entre 4 e 32 caracteres")
-    @NotBlank(message = "Nome não informado")
-    @Pattern(regexp = "^(?!\\d+$).*$", message = "O nome não pode conter apenas números")
+    @Size(min = 4, max = 32, message = "O nome deve ter entre 4 e 32 caracteres",
+            groups = {UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
+    @NotBlank(message = "Nome não informado",
+            groups = {UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
+    @Pattern(regexp = "^(?!\\d+$).*$", message = "O nome não pode conter apenas números",
+            groups = {UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
     private String nome;
 
     @JsonView(UsuarioView.Cadastrar.class)
-    @Size(min = 4, max = 32, message = "O login deve ter entre 4 e 32 caracteres")
-    @NotBlank(message = "Login não informado")
-    @Pattern(regexp = "^(?!\\d+$).*$", message = "O login não pode conter apenas números")
-    @UsuarioLoginCreateConstraint
+    @Size(min = 4, max = 32, message = "O login deve ter entre 4 e 32 caracteres", groups = UsuarioView.Cadastrar.class)
+    @NotBlank(message = "Login não informado", groups = UsuarioView.Cadastrar.class)
+    @Pattern(regexp = "^(?!\\d+$).*$", message = "O login não pode conter apenas números", groups = UsuarioView.Cadastrar.class)
+    @UsuarioLoginCreateConstraint(groups = UsuarioView.Cadastrar.class)
     private String login;
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
-    @Size(min = 4, max = 32, message = "A senha deve ter entre 4 e 32 caracteres")
-    @NotBlank(groups = UsuarioView.Cadastrar.class, message = "A senha não pode estar em branco")
+    @Size(min = 4, max = 32, message = "A senha deve ter entre 4 e 32 caracteres",
+            groups = {UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
+    @NotBlank(message = "A senha não pode estar em branco", groups = UsuarioView.Cadastrar.class)
     private String senha;
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
-    @Pattern(regexp = "^\\d{10,11}$", message = "Telefone inválido")
+    @Pattern(regexp = "^\\d{10,11}$", message = "Telefone inválido",
+            groups = {UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
     private String telefone;
 
     @JsonView({UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
-    @Email(message = "E-mail inválido")
+    @Email(message = "E-mail inválido",
+            groups = {UsuarioView.Cadastrar.class, UsuarioView.Atualizar.class})
     @UsuarioEmailCreateConstraint(groups = UsuarioView.Cadastrar.class)
     @UsuarioEmailUpdateConstraint(groups = UsuarioView.Atualizar.class)
     private String email;

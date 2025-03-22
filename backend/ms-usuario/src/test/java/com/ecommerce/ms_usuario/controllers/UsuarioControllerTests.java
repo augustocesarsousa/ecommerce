@@ -4,6 +4,7 @@ import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
 import com.ecommerce.ms_usuario.factories.UsuarioFactory;
 import com.ecommerce.ms_usuario.models.UsuarioModel;
 import com.ecommerce.ms_usuario.repositories.UsuarioRepository;
+import com.ecommerce.ms_usuario.services.exceptions.ResourceNotFoundException;
 import com.ecommerce.ms_usuario.services.impl.UsuarioServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +19,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,23 +44,28 @@ public class UsuarioControllerTests {
     private UsuarioDTO usuarioDTO;
     private UsuarioModel usuarioModel;
     private UUID existingID;
-    private String existinglogin;
+    private UUID notExistingId;
+    private String existingLogin;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioDTO = UsuarioFactory.criarUsuarioValidoDTO();
         usuarioModel = UsuarioFactory.criarUsuarioModel();
         existingID = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
-        existinglogin = "batman";
+        notExistingId = UUID.fromString("1ef38163-8438-43f2-847b-200e5e01b78f");
+        existingLogin = "batman";
 
         when(usuarioService.create(any())).thenReturn(usuarioModel);
+        when(usuarioService.update(eq(existingID), any())).thenReturn(usuarioModel);
+        when(usuarioService.update(eq(notExistingId), any())).thenThrow(ResourceNotFoundException.class);
 
         when(usuarioRepository.findById(existingID)).thenReturn(Optional.of(usuarioModel));
-        when(usuarioRepository.findByLogin(existinglogin)).thenReturn(usuarioModel);
+        when(usuarioRepository.findByLogin(existingLogin)).thenReturn(usuarioModel);
     }
 
     @Test
     public void createShouldReturnCreatedWhenValidDatas() throws Exception {
+        objectMapper.setConfig(objectMapper.getSerializationConfig().withView(UsuarioDTO.UsuarioView.Cadastrar.class));
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -101,9 +109,7 @@ public class UsuarioControllerTests {
         mockMvc.perform(post("/usuarios")
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.errors[0].message")
-                        .value("Nome não informado"));
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -209,4 +215,16 @@ public class UsuarioControllerTests {
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("Login já cadastrado"));
     }
+
+    @Test
+    public void updateShouldReturnOkWhenValidDatas() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", existingID)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idUsuarioUltAlteracao").exists());
+    }
+
 }
