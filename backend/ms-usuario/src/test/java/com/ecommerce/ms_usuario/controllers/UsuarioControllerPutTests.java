@@ -180,4 +180,17 @@ public class UsuarioControllerPutTests {
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("A senha deve ter entre 4 e 32 caracteres"));
     }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenInvalidTelefone() throws Exception {
+        usuarioDTO.setTelefone(shortUsuarioField);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("Telefone inválido"));
+    }
 }
