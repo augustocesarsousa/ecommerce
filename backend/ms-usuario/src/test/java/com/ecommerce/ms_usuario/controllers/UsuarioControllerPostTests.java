@@ -18,10 +18,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,17 +39,23 @@ public class UsuarioControllerPostTests {
     private ObjectMapper objectMapper;
 
     private UsuarioDTO usuarioDTO;
-    private UsuarioModel usuarioModel;
-    private UUID existingID;
-    private UUID notExistingId;
+    private String shortUsuarioField;
+    private String longUsuarioField;
+    private String onlyNumberUsuarioField;
+    private String blankUsuarioField;
+    private String nullUsuarioField;
     private String existingLogin;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioDTO = UsuarioFactory.criarUsuarioValidoDTO();
-        usuarioModel = UsuarioFactory.criarUsuarioModel();
-        existingID = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
-        notExistingId = UUID.fromString("1ef38163-8438-43f2-847b-200e5e01b78f");
+        UsuarioModel usuarioModel = UsuarioFactory.criarUsuarioModel();
+        UUID existingID = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        shortUsuarioField = "abc";
+        longUsuarioField = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        onlyNumberUsuarioField = "1234";
+        blankUsuarioField = "";
+        nullUsuarioField = null;
         existingLogin = "batman";
 
         when(usuarioService.create(any())).thenReturn(usuarioModel);
@@ -74,7 +78,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenNameSizeIsThree() throws Exception {
-        usuarioDTO.setNome("abc");
+        usuarioDTO.setNome(shortUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -87,7 +91,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenNameSizeIsThirtyThree() throws Exception {
-        usuarioDTO.setNome("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        usuarioDTO.setNome(longUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -100,7 +104,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenNameIsBlank() throws Exception {
-        usuarioDTO.setNome("");
+        usuarioDTO.setNome(blankUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -111,7 +115,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenNameIsNull() throws Exception {
-        usuarioDTO.setNome(null);
+        usuarioDTO.setNome(nullUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -124,7 +128,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenNameHasOnlyNumbers() throws Exception {
-        usuarioDTO.setNome("1234");
+        usuarioDTO.setNome(onlyNumberUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -137,7 +141,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenLoginSizeIsThree() throws Exception {
-        usuarioDTO.setLogin("abc");
+        usuarioDTO.setLogin(shortUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -150,7 +154,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenLoginSizeIsThirtyThree() throws Exception {
-        usuarioDTO.setLogin("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        usuarioDTO.setLogin(longUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -163,7 +167,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenLoginIsBlank() throws Exception {
-        usuarioDTO.setLogin("");
+        usuarioDTO.setLogin(blankUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -174,7 +178,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenLoginIsNull() throws Exception {
-        usuarioDTO.setLogin(null);
+        usuarioDTO.setLogin(nullUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -187,7 +191,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenLoginHasOnlyNumbers() throws Exception {
-        usuarioDTO.setLogin("1234");
+        usuarioDTO.setLogin(onlyNumberUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -200,7 +204,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenLoginAlreadyExisting() throws Exception {
-        usuarioDTO.setLogin("batman");
+        usuarioDTO.setLogin(existingLogin);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -213,7 +217,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenSenhaSizeIsThree() throws Exception {
-        usuarioDTO.setSenha("123");
+        usuarioDTO.setSenha(shortUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -226,7 +230,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenSenhaSizeIsThirtyThree() throws Exception {
-        usuarioDTO.setSenha("123456789012345678901234567890123");
+        usuarioDTO.setSenha(longUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -239,7 +243,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenSenhaIsNull() throws Exception {
-        usuarioDTO.setSenha(null);
+        usuarioDTO.setSenha(nullUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -252,7 +256,7 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnUnprocessableEntityWhenInvalidTelefone() throws Exception {
-        usuarioDTO.setTelefone("123");
+        usuarioDTO.setTelefone(shortUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
@@ -261,6 +265,19 @@ public class UsuarioControllerPostTests {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("Telefone inválido"));
+    }
+
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenInvalidEmail() throws Exception {
+        usuarioDTO.setEmail(shortUsuarioField);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("E-mail inválido"));
     }
 
 }
