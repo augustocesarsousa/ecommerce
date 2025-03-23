@@ -2,6 +2,7 @@ package com.ecommerce.ms_usuario.controllers;
 
 import com.ecommerce.ms_usuario.factories.UsuarioFactory;
 import com.ecommerce.ms_usuario.models.UsuarioModel;
+import com.ecommerce.ms_usuario.services.exceptions.ResourceNotFoundException;
 import com.ecommerce.ms_usuario.services.impl.UsuarioServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,13 +29,16 @@ public class UsuarioControllerGetTests {
 
     private UsuarioModel usuarioModel;
     private UUID existingUsuarioId;
+    private UUID notExistingUsuarioId;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioModel = UsuarioFactory.criarUsuarioModel();
         existingUsuarioId = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        notExistingUsuarioId = UUID.fromString("9ef38163-8438-43f2-847b-200e5e01b78f");
 
         when(usuarioService.findById(existingUsuarioId)).thenReturn(usuarioModel);
+        when(usuarioService.findById(notExistingUsuarioId)).thenThrow(ResourceNotFoundException.class);
     }
 
     @Test
@@ -43,6 +47,12 @@ public class UsuarioControllerGetTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.nome").exists());
+    }
+
+    @Test
+    public void findByIdShouldReturnNotFoundWhenIdDoesNotExisting() throws Exception {
+        mockMvc.perform(get("/usuarios/{id}", notExistingUsuarioId))
+                .andExpect(status().isNotFound());
     }
 
 }
