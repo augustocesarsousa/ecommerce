@@ -39,28 +39,33 @@ public class UsuarioControllerPostTests {
     private ObjectMapper objectMapper;
 
     private UsuarioDTO usuarioDTO;
+    private UUID notExistingUsuarioId;
     private String shortUsuarioField;
     private String longUsuarioField;
     private String onlyNumberUsuarioField;
     private String blankUsuarioField;
     private String nullUsuarioField;
     private String existingLogin;
+    private String invalidUsuarioPerfil;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioDTO = UsuarioFactory.criarUsuarioValidoDTO();
         UsuarioModel usuarioModel = UsuarioFactory.criarUsuarioModel();
-        UUID existingID = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        UUID existingUsuarioID = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        UUID notExistingUsuarioID = UUID.fromString("1ef38163-8438-43f2-847b-200e5e01b78f");
         shortUsuarioField = "abc";
         longUsuarioField = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         onlyNumberUsuarioField = "1234";
         blankUsuarioField = "";
         nullUsuarioField = null;
         existingLogin = "batman";
+        invalidUsuarioPerfil = "INVALIDO";
 
         when(usuarioService.create(any())).thenReturn(usuarioModel);
 
-        when(usuarioRepository.findById(existingID)).thenReturn(Optional.of(usuarioModel));
+        when(usuarioRepository.findById(existingUsuarioID)).thenReturn(Optional.of(usuarioModel));
+        when(usuarioRepository.findById(notExistingUsuarioID)).thenReturn(Optional.empty());
         when(usuarioRepository.findByLogin(existingLogin)).thenReturn(usuarioModel);
     }
 
@@ -278,6 +283,17 @@ public class UsuarioControllerPostTests {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("E-mail inválido"));
+    }
+
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenInvalidPerfil() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+        jsonBody = jsonBody.replace("FINANCEIRO", invalidUsuarioPerfil);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity());
     }
 
 }
