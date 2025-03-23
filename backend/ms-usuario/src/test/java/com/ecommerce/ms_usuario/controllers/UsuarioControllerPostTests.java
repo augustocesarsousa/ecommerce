@@ -296,4 +296,17 @@ public class UsuarioControllerPostTests {
                 .andExpect(status().isUnprocessableEntity());
     }
 
+    @Test
+    public void createShouldReturnUnprocessableEntityWhenInvalidIdUsuarioUltAlteracao() throws Exception {
+        usuarioDTO.setIdUsuarioUltAlteracao(notExistingUsuarioId);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(post("/usuarios")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("Usuário para última atualização não encontrado"));
+    }
+
 }
