@@ -40,24 +40,34 @@ public class UsuarioControllerPutTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private UsuarioDTO usuarioDTO;
     private UsuarioModel usuarioModel;
-    private UUID existingID;
-    private UUID notExistingId;
+    private UsuarioDTO usuarioDTO;
+    private UUID existingUsuarioId;
+    private UUID notExistingUsuarioId;
+    private String shortUsuarioField;
+    private String longUsuarioField;
+    private String onlyNumberUsuarioField;
+    private String blankUsuarioField;
+    private String nullUsuarioField;
     private String existingLogin;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioDTO = UsuarioFactory.criarUsuarioValidoDTO();
         usuarioModel = UsuarioFactory.criarUsuarioModel();
-        existingID = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
-        notExistingId = UUID.fromString("1ef38163-8438-43f2-847b-200e5e01b78f");
+        existingUsuarioId = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        notExistingUsuarioId = UUID.fromString("1ef38163-8438-43f2-847b-200e5e01b78f");
+        shortUsuarioField = "abc";
+        longUsuarioField = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        onlyNumberUsuarioField = "1234";
+        blankUsuarioField = "";
+        nullUsuarioField = null;
         existingLogin = "batman";
 
-        when(usuarioService.update(eq(existingID), any())).thenReturn(usuarioModel);
-        when(usuarioService.update(eq(notExistingId), any())).thenThrow(ResourceNotFoundException.class);
+        when(usuarioService.update(eq(existingUsuarioId), any())).thenReturn(usuarioModel);
+        when(usuarioService.update(eq(notExistingUsuarioId), any())).thenThrow(ResourceNotFoundException.class);
 
-        when(usuarioRepository.findById(existingID)).thenReturn(Optional.of(usuarioModel));
+        when(usuarioRepository.findById(existingUsuarioId)).thenReturn(Optional.of(usuarioModel));
         when(usuarioRepository.findByLogin(existingLogin)).thenReturn(usuarioModel);
     }
 
@@ -65,7 +75,7 @@ public class UsuarioControllerPutTests {
     public void updateShouldReturnOkWhenValidDatas() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
-        mockMvc.perform(put("/usuarios/{id}", existingID)
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -76,7 +86,7 @@ public class UsuarioControllerPutTests {
     public void updateShouldReturnNotFoundWhenIdDoesNotExisting() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
-        mockMvc.perform(put("/usuarios/{id}", notExistingId)
+        mockMvc.perform(put("/usuarios/{id}", notExistingUsuarioId)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
@@ -84,10 +94,10 @@ public class UsuarioControllerPutTests {
 
     @Test
     public void updateShouldReturnUnprocessableEntityWhenNameSizeIsThree() throws Exception {
-        usuarioDTO.setNome("abc");
+        usuarioDTO.setNome(shortUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
-        mockMvc.perform(put("/usuarios/{id}", existingID)
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
@@ -97,10 +107,10 @@ public class UsuarioControllerPutTests {
 
     @Test
     public void updateShouldReturnUnprocessableEntityWhenNameSizeIsThirtyThree() throws Exception {
-        usuarioDTO.setNome("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        usuarioDTO.setNome(longUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
-        mockMvc.perform(put("/usuarios/{id}", existingID)
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
@@ -110,10 +120,10 @@ public class UsuarioControllerPutTests {
 
     @Test
     public void updateShouldReturnUnprocessableEntityWhenNameIsBlank() throws Exception {
-        usuarioDTO.setNome("");
+        usuarioDTO.setNome(blankUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
-        mockMvc.perform(put("/usuarios/{id}", existingID)
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity());
@@ -121,10 +131,10 @@ public class UsuarioControllerPutTests {
 
     @Test
     public void updateShouldReturnUnprocessableEntityWhenNameIsNull() throws Exception {
-        usuarioDTO.setNome(null);
+        usuarioDTO.setNome(nullUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
-        mockMvc.perform(put("/usuarios/{id}", existingID)
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
@@ -134,14 +144,27 @@ public class UsuarioControllerPutTests {
 
     @Test
     public void updateShouldReturnUnprocessableEntityWhenNameHasOnlyNumbers() throws Exception {
-        usuarioDTO.setNome("1234");
+        usuarioDTO.setNome(onlyNumberUsuarioField);
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
-        mockMvc.perform(put("/usuarios/{id}", existingID)
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("O nome não pode conter apenas números"));
+    }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenSenhaSizeIsThree() throws Exception {
+        usuarioDTO.setSenha(shortUsuarioField);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("A senha deve ter entre 4 e 32 caracteres"));
     }
 }

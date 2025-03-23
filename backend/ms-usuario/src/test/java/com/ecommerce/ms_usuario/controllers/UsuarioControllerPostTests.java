@@ -38,7 +38,9 @@ public class UsuarioControllerPostTests {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private UsuarioModel usuarioModel;
     private UsuarioDTO usuarioDTO;
+    private UUID existingUsuarioId;
     private UUID notExistingUsuarioId;
     private String shortUsuarioField;
     private String longUsuarioField;
@@ -51,9 +53,9 @@ public class UsuarioControllerPostTests {
     @BeforeEach
     void setUp() throws Exception {
         usuarioDTO = UsuarioFactory.criarUsuarioValidoDTO();
-        UsuarioModel usuarioModel = UsuarioFactory.criarUsuarioModel();
-        UUID existingUsuarioID = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
-        UUID notExistingUsuarioID = UUID.fromString("1ef38163-8438-43f2-847b-200e5e01b78f");
+        usuarioModel = UsuarioFactory.criarUsuarioModel();
+        existingUsuarioId = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        notExistingUsuarioId = UUID.fromString("1ef38163-8438-43f2-847b-200e5e01b78f");
         shortUsuarioField = "abc";
         longUsuarioField = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         onlyNumberUsuarioField = "1234";
@@ -64,8 +66,8 @@ public class UsuarioControllerPostTests {
 
         when(usuarioService.create(any())).thenReturn(usuarioModel);
 
-        when(usuarioRepository.findById(existingUsuarioID)).thenReturn(Optional.of(usuarioModel));
-        when(usuarioRepository.findById(notExistingUsuarioID)).thenReturn(Optional.empty());
+        when(usuarioRepository.findById(existingUsuarioId)).thenReturn(Optional.of(usuarioModel));
+        when(usuarioRepository.findById(notExistingUsuarioId)).thenReturn(Optional.empty());
         when(usuarioRepository.findByLogin(existingLogin)).thenReturn(usuarioModel);
     }
 
