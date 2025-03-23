@@ -193,4 +193,17 @@ public class UsuarioControllerPutTests {
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("Telefone inválido"));
     }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenInvalidEmail() throws Exception {
+        usuarioDTO.setEmail(shortUsuarioField);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("E-mail inválido"));
+    }
 }
