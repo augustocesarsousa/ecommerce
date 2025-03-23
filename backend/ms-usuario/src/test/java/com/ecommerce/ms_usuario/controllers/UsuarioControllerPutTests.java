@@ -41,6 +41,7 @@ public class UsuarioControllerPutTests {
     private ObjectMapper objectMapper;
 
     private UsuarioModel usuarioModel;
+    private UsuarioModel existingUsuarioModel;
     private UsuarioDTO usuarioDTO;
     private UUID existingUsuarioId;
     private UUID notExistingUsuarioId;
@@ -50,11 +51,13 @@ public class UsuarioControllerPutTests {
     private String blankUsuarioField;
     private String nullUsuarioField;
     private String existingLogin;
+    private String existingEmail;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioDTO = UsuarioFactory.criarUsuarioValidoDTO();
         usuarioModel = UsuarioFactory.criarUsuarioModel();
+        existingUsuarioModel = UsuarioFactory.criarExistingUsuarioModel();
         existingUsuarioId = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
         notExistingUsuarioId = UUID.fromString("1ef38163-8438-43f2-847b-200e5e01b78f");
         shortUsuarioField = "abc";
@@ -63,12 +66,14 @@ public class UsuarioControllerPutTests {
         blankUsuarioField = "";
         nullUsuarioField = null;
         existingLogin = "batman";
+        existingEmail = "lex.luthor@email.com";
 
         when(usuarioService.update(eq(existingUsuarioId), any())).thenReturn(usuarioModel);
         when(usuarioService.update(eq(notExistingUsuarioId), any())).thenThrow(ResourceNotFoundException.class);
 
         when(usuarioRepository.findById(existingUsuarioId)).thenReturn(Optional.of(usuarioModel));
         when(usuarioRepository.findByLogin(existingLogin)).thenReturn(usuarioModel);
+        when(usuarioRepository.findByEmail(existingEmail)).thenReturn(existingUsuarioModel);
     }
 
     @Test
@@ -205,5 +210,18 @@ public class UsuarioControllerPutTests {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("E-mail inválido"));
+    }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenExistingEmail() throws Exception {
+        usuarioDTO.setEmail(existingEmail);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("E-mail já cadastrado"));
     }
 }
