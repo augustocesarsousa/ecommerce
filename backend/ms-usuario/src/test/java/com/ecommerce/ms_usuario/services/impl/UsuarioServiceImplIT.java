@@ -62,4 +62,15 @@ public class UsuarioServiceImplIT {
         });
     }
 
+    @Test
+    public void findByIdShouldReturnEntityWhenExistingId() {
+        UsuarioModel usuarioCriado = usuarioService.create(usuarioValidoDTO);
+
+        UsuarioModel usuarioEncontrado = usuarioService.findById(usuarioCriado.getId());
+
+        Assertions.assertNotNull(usuarioEncontrado);
+        Assertions.assertEquals(usuarioCriado.getId(), usuarioEncontrado.getId());
+    }
+
+
 }
