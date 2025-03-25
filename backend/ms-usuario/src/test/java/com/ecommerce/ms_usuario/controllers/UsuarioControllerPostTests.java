@@ -70,6 +70,8 @@ public class UsuarioControllerPostTests {
         existingEmail = "lex.luthor@email.com";
         invalidUsuarioPerfil = "INVALIDO";
 
+        objectMapper.setConfig(objectMapper.getSerializationConfig().withView(UsuarioDTO.UsuarioView.Cadastrar.class));
+
         when(usuarioService.create(any())).thenReturn(usuarioModel);
 
         when(usuarioRepository.findById(existingUsuarioId)).thenReturn(Optional.of(usuarioModel));
@@ -80,12 +82,11 @@ public class UsuarioControllerPostTests {
 
     @Test
     public void createShouldReturnCreatedWhenValidDatas() throws Exception {
-        objectMapper.setConfig(objectMapper.getSerializationConfig().withView(UsuarioDTO.UsuarioView.Cadastrar.class));
         String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
 
         mockMvc.perform(post("/usuarios")
-                .content(jsonBody)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.dtCriacao").exists());
     }
