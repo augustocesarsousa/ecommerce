@@ -38,4 +38,15 @@ public class UsuarioServiceImplIT {
         Assertions.assertNotNull(usuarioModel.getId());
         Assertions.assertTrue(usuarioRepository.existsById(usuarioModel.getId()));
     }
+
+    @Test
+    public void updateShouldUpdateEntityInDatabaseWhenValidDatas() {
+        UsuarioModel usuarioCriado = usuarioService.create(usuarioDTO);
+
+        usuarioDTO.setNome("John Stewart");
+        UsuarioModel usuarioAtualizado = usuarioService.update(usuarioCriado.getId(), usuarioDTO);
+
+        Assertions.assertEquals("John Stewart", usuarioAtualizado.getNome());
+        Assertions.assertEquals(usuarioCriado.getId(), usuarioAtualizado.getId());
+    }
 }
