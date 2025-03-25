@@ -72,5 +72,11 @@ public class UsuarioServiceImplIT {
         Assertions.assertEquals(usuarioCriado.getId(), usuarioEncontrado.getId());
     }
 
+    @Test
+    public void findByIdShouldThrowResourceNotFoundExceptionWhenNotExistingId() {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            usuarioService.findById(notExistingId);
+        });
+    }
 
 }
