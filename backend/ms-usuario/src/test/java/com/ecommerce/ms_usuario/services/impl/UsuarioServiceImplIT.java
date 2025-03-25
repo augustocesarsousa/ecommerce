@@ -6,11 +6,15 @@ import com.ecommerce.ms_usuario.models.UsuarioModel;
 import com.ecommerce.ms_usuario.repositories.UsuarioRepository;
 import com.ecommerce.ms_usuario.services.UsuarioService;
 import com.ecommerce.ms_usuario.services.exceptions.ResourceNotFoundException;
+import com.ecommerce.ms_usuario.spacifications.queryFilters.UsuarioQueryFilter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +31,8 @@ public class UsuarioServiceImplIT {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    private UsuarioQueryFilter usuarioQueryFilter;
+
     private UsuarioDTO usuarioValidoDTO;
     private UUID notExistingId;
 
@@ -34,6 +40,7 @@ public class UsuarioServiceImplIT {
     void setUp() throws Exception {
         usuarioValidoDTO = UsuarioFactory.criarUsuarioValidoDTO();
         notExistingId = UUID.fromString("9ef38163-8438-43f2-847b-200e5e01b78f");
+        usuarioQueryFilter = new UsuarioQueryFilter();
     }
 
     @Test
@@ -77,6 +84,17 @@ public class UsuarioServiceImplIT {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             usuarioService.findById(notExistingId);
         });
+    }
+
+    @Test
+    public void findAllShouldReturnPagedResults() {
+        usuarioService.create(usuarioValidoDTO);
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<UsuarioModel> page = usuarioService.findAll(usuarioQueryFilter.toSpecification(), pageable);
+
+        Assertions.assertNotNull(page);
+        Assertions.assertFalse(page.isEmpty());
     }
 
 }
