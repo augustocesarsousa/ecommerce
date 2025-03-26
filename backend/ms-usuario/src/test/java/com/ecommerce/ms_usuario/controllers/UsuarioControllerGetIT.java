@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,5 +50,18 @@ public class UsuarioControllerGetIT {
         mockMvc.perform(get("/usuarios/{id}", notExistingUsuarioId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void findAllShouldReturnPageWhenSortByNameAsc() throws Exception {
+        mockMvc.perform(get("/usuarios?sort=nome,asc")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").exists())
+                .andExpect(jsonPath("$.content[0].nome").value("Bruce Wayne"))
+                .andExpect(jsonPath("$.content[1].nome").value("Clark Kent"))
+                .andExpect(jsonPath("$.content[2].nome").value("Lex Luthor"))
+                .andExpect(jsonPath("$.content[3].nome").value("Louis Lane"))
+                .andExpect(jsonPath("$.content[4].nome").value("Martha Wayne"));
     }
 }
