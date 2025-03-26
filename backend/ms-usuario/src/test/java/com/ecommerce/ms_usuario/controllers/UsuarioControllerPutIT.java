@@ -33,11 +33,13 @@ public class UsuarioControllerPutIT {
 
     private UsuarioDTO usuarioValidoDTO;
     private UUID existingUsuarioId;
+    private UUID notExistingUsuarioId;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioValidoDTO = UsuarioFactory.criarUsuarioValidoDTO();
         existingUsuarioId = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        notExistingUsuarioId = UUID.fromString("9ef38163-8438-43f2-847b-200e5e01b78f");
 
         objectMapper.setConfig(objectMapper.getSerializationConfig().withView(UsuarioDTO.UsuarioView.Atualizar.class));
     }
@@ -54,5 +56,15 @@ public class UsuarioControllerPutIT {
                 .andExpect(jsonPath("$.nome").value(usuarioValidoDTO.getNome()))
                 .andExpect(jsonPath("$.telefone").value(usuarioValidoDTO.getTelefone()))
                 .andExpect(jsonPath("$.email").value(usuarioValidoDTO.getEmail()));
+    }
+
+    @Test
+    public void updateShouldReturnNotFoundWhenNotExistingId() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(usuarioValidoDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", notExistingUsuarioId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
