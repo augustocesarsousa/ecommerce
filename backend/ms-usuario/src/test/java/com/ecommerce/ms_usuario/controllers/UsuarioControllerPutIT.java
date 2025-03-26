@@ -2,8 +2,6 @@ package com.ecommerce.ms_usuario.controllers;
 
 import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
 import com.ecommerce.ms_usuario.factories.UsuarioFactory;
-import com.ecommerce.ms_usuario.services.UsuarioService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class UsuarioControllerPostIT {
+public class UsuarioControllerPutIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,25 +32,26 @@ public class UsuarioControllerPostIT {
     private ObjectMapper objectMapper;
 
     private UsuarioDTO usuarioValidoDTO;
+    private UUID existingUsuarioId;
 
     @BeforeEach
     void setUp() throws Exception {
         usuarioValidoDTO = UsuarioFactory.criarUsuarioValidoDTO();
+        existingUsuarioId = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
 
-        objectMapper.setConfig(objectMapper.getSerializationConfig().withView(UsuarioDTO.UsuarioView.Cadastrar.class));
+        objectMapper.setConfig(objectMapper.getSerializationConfig().withView(UsuarioDTO.UsuarioView.Atualizar.class));
     }
 
     @Test
-    public void createShouldPersistEntityInDatabaseWhenValidDatas() throws Exception {
+    public void updateShouldUpdateEntityInDatabaseWhenValidDatas() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(usuarioValidoDTO);
 
-        mockMvc.perform(post("/usuarios")
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.nome").value(usuarioValidoDTO.getNome()))
-                .andExpect(jsonPath("$.login").value(usuarioValidoDTO.getLogin()))
                 .andExpect(jsonPath("$.telefone").value(usuarioValidoDTO.getTelefone()))
                 .andExpect(jsonPath("$.email").value(usuarioValidoDTO.getEmail()));
     }
