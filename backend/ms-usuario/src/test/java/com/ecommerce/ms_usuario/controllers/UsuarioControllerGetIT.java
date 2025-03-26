@@ -57,6 +57,7 @@ public class UsuarioControllerGetIT {
         mockMvc.perform(get("/usuarios?sort=nome,asc")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(5))
                 .andExpect(jsonPath("$.content").exists())
                 .andExpect(jsonPath("$.content[0].nome").value("Bruce Wayne"))
                 .andExpect(jsonPath("$.content[1].nome").value("Clark Kent"))
@@ -70,8 +71,19 @@ public class UsuarioControllerGetIT {
         mockMvc.perform(get("/usuarios?status=INATIVO")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(2))
                 .andExpect(jsonPath("$.content").exists())
                 .andExpect(jsonPath("$.content[0].status").value("INATIVO"))
                 .andExpect(jsonPath("$.content[1].status").value("INATIVO"));
+    }
+
+    @Test
+    public void findAllShouldReturnPageWhenFilterByStatusAndPerfil() throws Exception {
+        mockMvc.perform(get("/usuarios?status=ATIVO&perfil=COMPRADOR")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content").exists())
+                .andExpect(jsonPath("$.content[0].nome").value("Louis Lane"));
     }
 }
