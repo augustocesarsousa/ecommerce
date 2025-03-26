@@ -27,10 +27,12 @@ public class UsuarioControllerGetIT {
     private MockMvc mockMvc;
 
     private UUID existingUsuarioId;
+    private UUID notExistingUsuarioId;
 
     @BeforeEach
     void setUp() throws Exception {
         existingUsuarioId = UUID.fromString("2ef38163-8438-43f2-847b-200e5e01b78f");
+        notExistingUsuarioId = UUID.fromString("9ef38163-8438-43f2-847b-200e5e01b78f");
     }
 
     @Test
@@ -42,5 +44,12 @@ public class UsuarioControllerGetIT {
                 .andExpect(jsonPath("$.nome").value("Bruce Wayne"))
                 .andExpect(jsonPath("$.telefone").value("11912345678"))
                 .andExpect(jsonPath("$.email").value("bruce.wayne@email.com"));
+    }
+
+    @Test
+    public void findByIdShouldReturnNotFoundWhenNotExistingId() throws Exception {
+        mockMvc.perform(get("/usuarios/{id}", notExistingUsuarioId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
