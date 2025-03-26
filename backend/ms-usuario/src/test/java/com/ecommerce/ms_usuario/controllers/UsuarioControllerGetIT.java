@@ -64,4 +64,14 @@ public class UsuarioControllerGetIT {
                 .andExpect(jsonPath("$.content[3].nome").value("Louis Lane"))
                 .andExpect(jsonPath("$.content[4].nome").value("Martha Wayne"));
     }
+
+    @Test
+    public void findAllShouldReturnPageWhenFilterByStatus() throws Exception {
+        mockMvc.perform(get("/usuarios?status=INATIVO")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").exists())
+                .andExpect(jsonPath("$.content[0].status").value("INATIVO"))
+                .andExpect(jsonPath("$.content[1].status").value("INATIVO"));
+    }
 }
