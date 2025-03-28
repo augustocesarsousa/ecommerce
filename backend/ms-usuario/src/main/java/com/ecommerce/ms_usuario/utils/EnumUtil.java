@@ -6,8 +6,8 @@ import java.util.*;
 
 public class EnumUtil {
 
-    public static <E extends Enum<E>> Set<EnumRecord> convertEnumToSet(Class<E> enumClass) {
-        Set<EnumRecord> lista = new HashSet<>();
+    public static <E extends Enum<E>> List<EnumRecord> convertEnumToList(Class<E> enumClass) {
+        List<EnumRecord> lista = new ArrayList<>();
         E[] enumValues = enumClass.getEnumConstants();
 
         if(enumValues != null) {

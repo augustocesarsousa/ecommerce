@@ -1,6 +1,7 @@
 package com.ecommerce.ms_usuario.controllers;
 
 import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
+import com.ecommerce.ms_usuario.enums.UsuarioPerfil;
 import com.ecommerce.ms_usuario.enums.UsuarioStatus;
 import com.ecommerce.ms_usuario.models.UsuarioModel;
 import com.ecommerce.ms_usuario.records.EnumRecord;
@@ -18,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -65,7 +66,12 @@ public class  UsuarioController {
     }
 
     @GetMapping("/status")
-    public ResponseEntity<Set<EnumRecord>> getStatus() {
-        return ResponseEntity.status(HttpStatus.OK).body(EnumUtil.convertEnumToSet(UsuarioStatus.class));
+    public ResponseEntity<List<EnumRecord>> getStatus() {
+        return ResponseEntity.status(HttpStatus.OK).body(EnumUtil.convertEnumToList(UsuarioStatus.class));
+    }
+
+    @GetMapping("/perfis")
+    public ResponseEntity<List<EnumRecord>> getPerfis() {
+        return ResponseEntity.status(HttpStatus.OK).body(EnumUtil.convertEnumToList(UsuarioPerfil.class));
     }
 }
