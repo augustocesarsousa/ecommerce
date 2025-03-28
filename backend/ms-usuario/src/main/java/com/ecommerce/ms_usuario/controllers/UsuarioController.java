@@ -1,11 +1,13 @@
 package com.ecommerce.ms_usuario.controllers;
 
 import com.ecommerce.ms_usuario.dtos.UsuarioDTO;
+import com.ecommerce.ms_usuario.enums.UsuarioStatus;
 import com.ecommerce.ms_usuario.models.UsuarioModel;
+import com.ecommerce.ms_usuario.records.EnumRecord;
 import com.ecommerce.ms_usuario.services.UsuarioService;
 import com.ecommerce.ms_usuario.spacifications.queryFilters.UsuarioQueryFilter;
+import com.ecommerce.ms_usuario.utils.EnumUtil;
 import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -59,5 +62,10 @@ public class  UsuarioController {
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(usuarioModelPage);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Set<EnumRecord>> getStatus() {
+        return ResponseEntity.status(HttpStatus.OK).body(EnumUtil.convertEnumToSet(UsuarioStatus.class));
     }
 }
