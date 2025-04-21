@@ -226,4 +226,37 @@ public class UsuarioControllerPutTests {
                 .andExpect(jsonPath("$.errors[0].message")
                         .value("E-mail já cadastrado"));
     }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenInvalidStatus() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+        jsonBody = jsonBody.replace("ATIVO", shortUsuarioField);
+
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenInvalidPerfil() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+        jsonBody = jsonBody.replace("FINANCEIRO", shortUsuarioField);
+
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenInvalidIdUsuarioUltAlteracao() throws Exception {
+        usuarioDTO.setIdUsuarioUltAlteracao(notExistingUsuarioId);
+        String jsonBody = objectMapper.writeValueAsString(usuarioDTO);
+
+        mockMvc.perform(put("/usuarios/{id}", existingUsuarioId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity());
+    }
 }
