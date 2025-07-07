@@ -1,0 +1,23 @@
+package com.ecommerce.ms_empresa;
+
+import com.ecommerce.ms_empresa.dtos.EmpresaDTO;
+import com.ecommerce.ms_empresa.models.EmpresaModel;
+import com.ecommerce.ms_empresa.services.EmpresaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("/empresas")
+public class controllers {
+
+    @Autowired
+    EmpresaService empresaService;
+
+    @PostMapping
+    public ResponseEntity<EmpresaModel> create(@RequestBody EmpresaDTO empresaDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(empresaService.create(empresaDTO));
+    }
+}
