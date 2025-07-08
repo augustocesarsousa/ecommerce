@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/empresas")
@@ -24,5 +26,10 @@ public class EmpresaController {
     @GetMapping
     public ResponseEntity<EmpresaModel> findOne() {
         return ResponseEntity.status(HttpStatus.OK).body((empresaService.findOne()));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EmpresaModel> updade(@PathVariable(value = "id") UUID id, EmpresaDTO empresaDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(empresaService.update(id, empresaDTO));
     }
 }

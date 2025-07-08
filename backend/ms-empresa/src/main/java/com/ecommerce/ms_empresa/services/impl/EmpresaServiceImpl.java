@@ -5,6 +5,7 @@ import com.ecommerce.ms_empresa.models.EmpresaModel;
 import com.ecommerce.ms_empresa.repositories.EmpresaRepository;
 import com.ecommerce.ms_empresa.services.EmpresaService;
 import com.ecommerce.ms_empresa.services.exceptions.EntityAlreadyRegistered;
+import com.ecommerce.ms_empresa.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,16 @@ public class EmpresaServiceImpl implements EmpresaService {
 
     @Override
     public EmpresaModel update(UUID id, EmpresaDTO empresaDTO) {
-        return null;
+        EmpresaModel empresaModel = empresaRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Empresa para atualizar não encontrada")
+        );
+
+        empresaDTO.setId(empresaModel.getId());
+        empresaDTO.setDtCriacao(empresaModel.getDtCriacao());
+        empresaDTO.setDtUltAlteracao(LocalDateTime.now(ZoneId.of("UTC")));
+
+        BeanUtils.copyProperties(empresaDTO, empresaModel);
+
+        return empresaRepository.save(empresaModel);
     }
 }
