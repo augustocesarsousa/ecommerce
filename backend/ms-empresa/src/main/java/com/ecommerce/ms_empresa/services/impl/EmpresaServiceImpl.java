@@ -37,7 +37,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 
     @Override
     public EmpresaModel findOne() {
-        return null;
+        return empresaRepository.findFirstByOrderByIdAsc().orElseGet(EmpresaModel::new);
     }
 
     @Override

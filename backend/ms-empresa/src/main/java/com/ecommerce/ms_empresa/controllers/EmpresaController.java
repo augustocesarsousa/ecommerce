@@ -1,4 +1,4 @@
-package com.ecommerce.ms_empresa;
+package com.ecommerce.ms_empresa.controllers;
 
 import com.ecommerce.ms_empresa.dtos.EmpresaDTO;
 import com.ecommerce.ms_empresa.models.EmpresaModel;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/empresas")
-public class controllers {
+public class EmpresaController {
 
     @Autowired
     EmpresaService empresaService;
@@ -19,5 +19,10 @@ public class controllers {
     @PostMapping
     public ResponseEntity<EmpresaModel> create(@RequestBody EmpresaDTO empresaDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(empresaService.create(empresaDTO));
+    }
+
+    @GetMapping
+    public ResponseEntity<EmpresaModel> findOne() {
+        return ResponseEntity.status(HttpStatus.OK).body((empresaService.findOne()));
     }
 }
