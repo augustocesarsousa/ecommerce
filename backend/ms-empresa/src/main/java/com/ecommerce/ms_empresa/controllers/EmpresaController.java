@@ -3,6 +3,7 @@ package com.ecommerce.ms_empresa.controllers;
 import com.ecommerce.ms_empresa.dtos.EmpresaDTO;
 import com.ecommerce.ms_empresa.models.EmpresaModel;
 import com.ecommerce.ms_empresa.services.EmpresaService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,9 @@ public class EmpresaController {
     EmpresaService empresaService;
 
     @PostMapping
-    public ResponseEntity<EmpresaModel> create(@RequestBody EmpresaDTO empresaDTO) {
+    public ResponseEntity<EmpresaModel> create(@RequestBody
+                                                   @JsonView(EmpresaDTO.EmpresaView.Cadastrar.class)
+                                                   EmpresaDTO empresaDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(empresaService.create(empresaDTO));
     }
 
@@ -29,7 +32,10 @@ public class EmpresaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmpresaModel> updade(@PathVariable(value = "id") UUID id, EmpresaDTO empresaDTO) {
+    public ResponseEntity<EmpresaModel> updade(@PathVariable(value = "id") UUID id,
+                                               @RequestBody
+                                               @JsonView(EmpresaDTO.EmpresaView.Atualizar.class)
+                                               EmpresaDTO empresaDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(empresaService.update(id, empresaDTO));
     }
 }
