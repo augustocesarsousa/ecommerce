@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class EmpresaController {
     @PostMapping
     public ResponseEntity<EmpresaModel> create(@RequestBody
                                                    @JsonView(EmpresaDTO.EmpresaView.Cadastrar.class)
+                                                   @Validated(EmpresaDTO.EmpresaView.Cadastrar.class)
                                                    EmpresaDTO empresaDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(empresaService.create(empresaDTO));
     }
@@ -35,6 +37,7 @@ public class EmpresaController {
     public ResponseEntity<EmpresaModel> updade(@PathVariable(value = "id") UUID id,
                                                @RequestBody
                                                @JsonView(EmpresaDTO.EmpresaView.Atualizar.class)
+                                               @Validated(EmpresaDTO.EmpresaView.Atualizar.class)
                                                EmpresaDTO empresaDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(empresaService.update(id, empresaDTO));
     }
