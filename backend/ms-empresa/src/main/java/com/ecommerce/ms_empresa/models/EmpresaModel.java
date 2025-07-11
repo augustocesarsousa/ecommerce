@@ -57,6 +57,9 @@ public class EmpresaModel implements Serializable {
     private String bairro;
 
     @Column(nullable = false)
+    private String cidade;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UnidadeFederativa uf;
 

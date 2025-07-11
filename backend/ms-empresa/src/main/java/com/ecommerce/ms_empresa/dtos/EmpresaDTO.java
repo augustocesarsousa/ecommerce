@@ -121,6 +121,14 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
+    @NotBlank(message = "Cidade inválida",
+            groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
+    private String cidade;
+
+    @JsonView({
+            EmpresaView.Cadastrar.class,
+            EmpresaView.Atualizar.class
+    })
     private UnidadeFederativa uf;
 
     @JsonView({
