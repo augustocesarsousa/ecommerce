@@ -37,6 +37,8 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
+    @NotBlank(message = "CNPJ é obrigatório",
+            groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     @CNPJ(message = "CNPJ inválido",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private String cnpj;
@@ -45,7 +47,7 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
-    @NotBlank(message = "Inscrição Estadual inválida",
+    @NotBlank(message = "Inscrição Estadual é obrigatória",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private String inscricaoEstadual;
 
@@ -53,7 +55,7 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
-    @NotBlank(message = "Razao Social inválida",
+    @NotBlank(message = "Razao Social é obrigatória",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private String razaoSocial;
 
@@ -83,7 +85,7 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
-    @NotBlank(message = "CEP inválido",
+    @NotBlank(message = "CEP é obrigatório",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private String cep;
 
@@ -91,7 +93,7 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
-    @NotBlank(message = "Logradouro inválido",
+    @NotBlank(message = "Logradouro é obrigatório",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private String logradouro;
 
@@ -99,7 +101,7 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
-    @NotNull(message = "Número inválido",
+    @NotNull(message = "Número é obrigatório",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private Integer numero;
 
@@ -113,7 +115,7 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
-    @NotBlank(message = "Bairro inválido",
+    @NotBlank(message = "Bairro é obrigatório",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private String bairro;
 
@@ -121,7 +123,7 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
-    @NotBlank(message = "Cidade inválida",
+    @NotBlank(message = "Cidade é obrigatória",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private String cidade;
 
@@ -135,7 +137,7 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
-    @CPF(message = "CPF inválido",
+    @CPF(message = "CPF do presidente inválido",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private String cpfPresidente;
 
@@ -143,7 +145,7 @@ public class EmpresaDTO implements Serializable {
             EmpresaView.Cadastrar.class,
             EmpresaView.Atualizar.class
     })
-    @NotBlank(message = "Nome do presidente inválido",
+    @NotBlank(message = "Nome do presidente é obrigatório",
             groups = {EmpresaView.Cadastrar.class, EmpresaView.Atualizar.class})
     private String nomePresidente;
 

@@ -32,7 +32,6 @@ public class EmpresaServiceImpl implements EmpresaService {
         empresaDTO.setDtUltAlteracao(empresaDTO.getDtCriacao());
 
         BeanUtils.copyProperties(empresaDTO, empresaModel);
-
         return empresaRepository.save(empresaModel);
     }
 
